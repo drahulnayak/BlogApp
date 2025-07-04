@@ -1,0 +1,14 @@
+module.exports.isLoggedIn = (req, res, next) => {
+  if (!req.isAuthenticated || !req.isAuthenticated()) {
+    req.flash('error', 'You must be signed in first!');
+    return res.redirect('/user/signin');
+  }
+  next();
+};
+module.exports.isNotLoggedIn = (req, res, next) => {
+  if (req.isAuthenticated && req.isAuthenticated()) {
+    req.flash('error', 'You are already signed in!');
+    return res.redirect('/');
+  }
+  next();
+};
