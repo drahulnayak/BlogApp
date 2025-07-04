@@ -1,10 +1,10 @@
 {
   "name": "15blog",
   "version": "1.0.0",
-  "main": "index.js",
+  "main": "app.js",
   "scripts": {
-    "start": "node index.js",
-    "dev": "nodemon index.js"
+    "start": "node app.js",
+    "dev": "nodemon app.js"
   },
   "keywords": [
     "ejs",
@@ -14,7 +14,9 @@
   "author": "Rahul Nayak",
   "license": "ISC",
   "dependencies": {
+    "axios": "^1.10.0",
     "cookie-parser": "^1.4.7",
+    "dotenv": "^17.0.1",
     "ejs": "^3.1.10",
     "express": "^4.21.2",
     "jsonwebtoken": "^9.0.2",

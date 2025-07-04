@@ -1,4 +1,5 @@
 // index.js
+require('dotenv').config()
 const path            = require('path');
 const express         = require('express');
 const mongoose        = require('mongoose');
@@ -10,15 +11,18 @@ const userRoutes = require('./routes/user');
 const Blog       = require('./models/blog');
 
 const app  = express();
-const PORT = 9000;
+const PORT = process.env.PORT || 9000;
 
 // ─── Database ──────────────────────────────────────────────────────────────
-mongoose.connect('mongodb://127.0.0.1:27017/blogg', {
-  useNewUrlParser: true,
-  useUnifiedTopology: true
-})
-.then(() => console.log("✅ MongoDB is connected"))
-.catch(err => console.error("❌ MongoDB connection error:", err));
+// mongoose.connect('mongodb://127.0.0.1:27017/blogg', {
+//   useNewUrlParser: true,
+//   useUnifiedTopology: true
+// })
+// .then(() => console.log("✅ MongoDB is connected"))
+// .catch(err => console.error("❌ MongoDB connection error:", err));
+mongoose.connect(process.env.MONGO_URL)
+  .then(() => console.log("✅ MongoDB is connected"))
+  .catch(err => console.error("❌ MongoDB connection error:", err));
 
 // ─── View Engine ──────────────────────────────────────────────────────────
 app.set('view engine', 'ejs');
@@ -55,6 +59,7 @@ app.get('/', async (req, res) => {
     res.status(500).send("Internal Server Error");
   }
 });
+
 
 // ─── Start Server ─────────────────────────────────────────────────────────
 app.listen(PORT, () => {

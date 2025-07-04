@@ -3,22 +3,60 @@
   <head>
     <%- include('./partials/head') %>
     <title>Homepage</title>
+    <style>
+      .card {
+        width: 100%;
+        height: 100%;
+        border: 1px solid #ddd;
+        border-radius: 8px;
+        overflow: hidden;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+        transition: transform 0.2s ease;
+      }
+
+      .card:hover {
+        transform: translateY(-5px);
+      }
+
+      .card-img-top {
+        height: 180px;
+        object-fit: cover;
+      }
+
+      .card-body {
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        height: 160px;
+      }
+
+      .card-title {
+        font-size: 1.1rem;
+        font-weight: bold;
+        margin-bottom: 0.75rem;
+      }
+
+      .btn-view {
+        margin-top: auto;
+      }
+    </style>
   </head>
   <body>
     <%- include('./partials/nav') %>
 
-    <div class="container mt-3">
-      <div class="row row-cols-4">
+    <div class="container mt-4">
+      <h2 class="text-center mb-4">Latest Blogs</h2>
+      <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-4">
         <% blogs.forEach(blog => { %>
-        <div class="col">
-          <div class="card col" style="width: 18rem">
-            <img src="<%= blog.coverImageURL %>" class="card-img-top" />
-            <div class="card-body">
-              <h5 class="card-title"><%= blog.title %></h5>
-              <a href="/blog/<%= blog._id %>" class="btn btn-primary">View</a>
+          <div class="col">
+            <div class="card h-100">
+              <img src="<%= blog.coverImageURL %>" class="card-img-top" alt="Blog Image" />
+              <div class="card-body">
+                <h5 class="card-title"><%= blog.title %></h5>
+                <a href="/blog/<%= blog._id %>" class="btn btn-primary btn-view">View</a>
+              </div>
             </div>
           </div>
-        </div>
         <% }) %>
       </div>
     </div>

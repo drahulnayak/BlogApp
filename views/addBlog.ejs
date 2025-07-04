@@ -3,6 +3,21 @@
   <head>
     <%- include('./partials/head') %>
     <title>Add New Blog</title>
+    <style>
+      /* Add custom style to make file input and image preview neat */
+      .custom-file-input {
+        width: 300px;
+      }
+      #imagePreview {
+        margin-top: 10px;
+        max-width: 200px;
+        max-height: 200px;
+        display: none;
+        border: 1px solid #ccc;
+        padding: 5px;
+        border-radius: 5px;
+      }
+    </style>
   </head>
   <body>
     <%- include('./partials/nav') %>
@@ -13,12 +28,14 @@
           <label for="coverImage" class="form-label">Cover Image</label>
           <input
             type="file"
-            class="form-control"
+            class="form-control custom-file-input"
             id="coverImage"
             name="coverImage"
-            aria-describedby="coverImage"
+            onchange="previewImage(event)"
           />
+          <img id="imagePreview" alt="Image Preview" />
         </div>
+
         <div class="mb-3">
           <label for="title" class="form-label">Title</label>
           <input
@@ -29,16 +46,34 @@
             aria-describedby="title"
           />
         </div>
+
         <div class="mb-3">
-          <label for="body">Body</label>
-          <textarea name="body" class="form-control" id="body"></textarea>
+          <label for="body" class="form-label">Body</label>
+          <textarea name="body" class="form-control" id="body" rows="5"></textarea>
         </div>
+
         <div class="mb-3">
-          <button class="btn btn-primary">Submit</button>
+          <button type="submit" class="btn btn-primary">Submit</button>
         </div>
       </form>
     </div>
 
     <%- include('./partials/script') %>
+
+    <script>
+      function previewImage(event) {
+        const input = event.target;
+        const preview = document.getElementById('imagePreview');
+
+        if (input.files && input.files[0]) {
+          const reader = new FileReader();
+          reader.onload = function (e) {
+            preview.src = e.target.result;
+            preview.style.display = 'block';
+          };
+          reader.readAsDataURL(input.files[0]);
+        }
+      }
+    </script>
   </body>
 </html>
