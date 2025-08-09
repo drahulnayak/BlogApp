@@ -1,133 +1,215 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <%- include('./partials/head') %>
-    <title><%= blog.title %></title>
-    <style>
-      #ttsControls {
-        margin-top: 15px;
-      }
-      #ttsControls button {
-        margin-right: 10px;
-      }
-    </style>
-  </head>
-  <body>
-    <%- include('./partials/nav') %>
+<head>
+  <%- include('./partials/head') %>
+  <title><%= blog.title %></title>
 
-    <!-- Blog Section -->
-    <div class="container mt-4">
-      <h1><%= blog.title %></h1>
-      <img src="<%= blog.coverImageURL %>" class="img-fluid mb-3" alt="Cover Image" style="max-width: 700px;" />
+  <style>
+    body {
+      background: linear-gradient(135deg, #f9f7f7, #dbe2ef, #3f72af);
+      min-height: 100vh;
+      font-family: 'Segoe UI', sans-serif;
+    }
 
-      <!-- Body + TTS -->
-      <pre id="blogBody" class="fs-5" style="white-space: pre-wrap;"><%= blog.body %></pre>
+    h1, h3 {
+      font-weight: bold;
+      color: #112d4e;
+    }
 
-      <!-- TTS Controls -->
-      <div id="ttsControls">
-        <button id="playBtn" class="btn btn-success btn-sm">🔊 Play</button>
-        <button id="pauseBtn" class="btn btn-warning btn-sm">⏸ Pause</button>
-        <button id="resumeBtn" class="btn btn-info btn-sm">▶️ Resume</button>
-        <button id="stopBtn" class="btn btn-danger btn-sm">⏹ Stop</button>
-        <button id="downloadBtn" class="btn btn-secondary btn-sm">📥 Download Blog</button>
-      </div>
+    .blog-container {
+      background: rgba(255, 255, 255, 0.95);
+      border-radius: 15px;
+      padding: 20px;
+      box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.1);
+    }
+
+    img.blog-cover {
+      max-width: 80%;
+      height: auto;
+      display: block;
+      margin: 0 auto;
+      border-radius: 10px;
+      box-shadow: 0px 3px 10px rgba(0, 0, 0, 0.1);
+    }
+
+    img.rounded-circle {
+      border: 2px solid #3f72af;
+      width: 40px;
+      height: 40px;
+      object-fit: cover;
+    }
+
+    pre {
+      background: #f7f7f7;
+      padding: 15px;
+      border-radius: 10px;
+      border: 1px solid #e0e0e0;
+      font-size: 1rem;
+      white-space: pre-wrap;
+    }
+
+    #ttsControls button {
+      margin-right: 8px;
+    }
+
+    .comment-box {
+      background: #f9f9f9;
+      padding: 10px 15px;
+      border-radius: 10px;
+      border: 1px solid #ddd;
+    }
+
+    /* Like button styles */
+    #likeBtn {
+      background-color: #ff4757;
+      color: white;
+      border: none;
+      padding: 6px 12px;
+      border-radius: 20px;
+      font-size: 0.9rem;
+      transition: transform 0.2s ease, background-color 0.2s ease;
+    }
+    #likeBtn:hover {
+      background-color: #e84118;
+      transform: scale(1.05);
+    }
+    #likeCount {
+      margin-left: 5px;
+      font-weight: bold;
+    }
+  </style>
+</head>
+
+<body>
+  <%- include('./partials/nav') %>
+
+  <!-- Blog Section -->
+  <div class="container mt-5 blog-container text-center">
+    <h1><%= blog.title %></h1>
+    <img src="<%= blog.coverImageURL %>" class="blog-cover mb-3" alt="Cover Image" />
+
+    <pre id="blogBody" class="fs-5 text-start"><%= blog.body %></pre>
+
+    <!-- Like Button -->
+    <div class="mt-3">
+      <button id="likeBtn">❤️ Like <span id="likeCount">0</span></button>
     </div>
 
-    <!-- Author Info -->
-    <div class="container mt-4 d-flex align-items-center">
-      <img src="<%= blog.createdBy.profileImageURL %>" width="50px" class="rounded-circle me-2" />
-      <span class="fw-bold"><%= blog.createdBy.fullName %></span>
+    <!-- TTS Controls -->
+    <div id="ttsControls" class="mt-3">
+      <button id="playBtn" class="btn btn-success btn-sm">🔊 Play</button>
+      <button id="pauseBtn" class="btn btn-warning btn-sm">⏸ Pause</button>
+      <button id="resumeBtn" class="btn btn-info btn-sm">▶️ Resume</button>
+      <button id="stopBtn" class="btn btn-danger btn-sm">⏹ Stop</button>
+      <button id="downloadBtn" class="btn btn-secondary btn-sm">📥 Download Blog</button>
     </div>
+  </div>
 
-    <!-- Comments Section -->
-    <div class="container mt-4">
-      <h3>Comments (<%= comments.length %>)</h3>
-      <% if (locals.user) { %>
-        <form action="/blog/comment/<%= blog._id %>" method="post" class="mb-3">
-          <input type="text" name="content" class="form-control mb-2" placeholder="Enter your comment" />
-          <button type="submit" class="btn btn-primary btn-sm">Add Comment</button>
-        </form>
-      <% } else { %>
-        <p>Please sign in to comment.</p>
-      <% } %>
+  <!-- Author Info -->
+  <div class="container mt-4 d-flex align-items-center p-3 blog-container">
+    <img src="<%= blog.createdBy.profileImageURL %>" class="rounded-circle me-2" />
+    <span class="fw-bold"><%= blog.createdBy.fullName %></span>
+  </div>
 
-      <div class="mt-3">
-        <% comments.forEach(comment => { %>
-          <div class="mb-3">
-            <img src="<%= comment.createdBy.profileImageURL %>" width="40px" class="rounded-circle me-2" />
+  <!-- Comments Section -->
+  <div class="container mt-4 blog-container">
+    <h3>Comments (<%= comments.length %>)</h3>
+    <% if (locals.user) { %>
+      <form action="/blog/comment/<%= blog._id %>" method="post" class="mb-3">
+        <input type="text" name="content" class="form-control mb-2" placeholder="Enter your comment" />
+        <button type="submit" class="btn btn-primary btn-sm">Add Comment</button>
+      </form>
+    <% } else { %>
+      <p class="text-muted">Please sign in to comment.</p>
+    <% } %>
+
+    <div class="mt-3">
+      <% comments.forEach(comment => { %>
+        <div class="d-flex align-items-start mb-3 comment-box">
+          <img src="<%= comment.createdBy.profileImageURL %>" class="rounded-circle me-2" />
+          <div>
             <strong><%= comment.createdBy.fullName %></strong>
-            <pre style="white-space: pre-wrap;"><%= comment.content %></pre>
+            <pre><%= comment.content %></pre>
           </div>
-        <% }) %>
-      </div>
+        </div>
+      <% }) %>
     </div>
+  </div>
 
-    <%- include('./partials/script') %>
+  <%- include('./partials/script') %>
 
-    <!-- TTS & Download Script -->
-    <script>
-      const blogBody = document.getElementById("blogBody").innerText;
-      const playBtn = document.getElementById("playBtn");
-      const pauseBtn = document.getElementById("pauseBtn");
-      const resumeBtn = document.getElementById("resumeBtn");
-      const stopBtn = document.getElementById("stopBtn");
-      const downloadBtn = document.getElementById("downloadBtn");
+  <!-- Like Button + TTS & Download Script -->
+  <script>
+    // Like Button Logic
+    let likeCount = 0;
+    const likeBtn = document.getElementById("likeBtn");
+    const likeCountEl = document.getElementById("likeCount");
 
-      let utterance;
-      let selectedVoice;
+    likeBtn.addEventListener("click", () => {
+      likeCount++;
+      likeCountEl.textContent = likeCount;
+      likeBtn.style.backgroundColor = "#2ed573";
+      setTimeout(() => {
+        likeBtn.style.backgroundColor = "#ff4757";
+      }, 300);
+    });
 
-      // Load voice
-      function setVoice() {
-        const voices = speechSynthesis.getVoices();
-        selectedVoice = voices.find(v => 
-          v.name.toLowerCase().includes("google uk english female") ||
-          v.name.toLowerCase().includes("zira") ||
-          v.name.toLowerCase().includes("child")
-        ) || voices[0];
+    // TTS Logic
+    const blogBody = document.getElementById("blogBody").innerText;
+    const playBtn = document.getElementById("playBtn");
+    const pauseBtn = document.getElementById("pauseBtn");
+    const resumeBtn = document.getElementById("resumeBtn");
+    const stopBtn = document.getElementById("stopBtn");
+    const downloadBtn = document.getElementById("downloadBtn");
+
+    let utterance, selectedVoice;
+
+    function setVoice() {
+      const voices = speechSynthesis.getVoices();
+      selectedVoice = voices.find(v =>
+        v.name.toLowerCase().includes("google uk english female") ||
+        v.name.toLowerCase().includes("zira") ||
+        v.name.toLowerCase().includes("child")
+      ) || voices[0];
+    }
+    speechSynthesis.onvoiceschanged = setVoice;
+
+    function speakBlog() {
+      if (!utterance || !speechSynthesis.speaking) {
+        utterance = new SpeechSynthesisUtterance(blogBody);
+        utterance.voice = selectedVoice;
+        utterance.rate = 1.0;
+        utterance.pitch = 1.5;
+        utterance.lang = "en-US";
+        speechSynthesis.speak(utterance);
       }
+    }
 
-      speechSynthesis.onvoiceschanged = setVoice;
-
-      function speakBlog() {
-        if (!utterance || !speechSynthesis.speaking) {
-          utterance = new SpeechSynthesisUtterance(blogBody);
-          utterance.voice = selectedVoice;
-          utterance.rate = 1.0;
-          utterance.pitch = 1.5; // High pitch = sweeter tone
-          utterance.lang = "en-US";
-          speechSynthesis.speak(utterance);
-        }
-      }
-
-      playBtn.addEventListener("click", () => {
-        if (speechSynthesis.speaking) speechSynthesis.cancel();
-        speakBlog();
-      });
-
-      pauseBtn.addEventListener("click", () => {
-        if (speechSynthesis.speaking) speechSynthesis.pause();
-      });
-
-      resumeBtn.addEventListener("click", () => {
-        if (speechSynthesis.paused) speechSynthesis.resume();
-      });
-
-      stopBtn.addEventListener("click", () => {
-        speechSynthesis.cancel();
-      });
-
-      downloadBtn.addEventListener("click", () => {
-        const text = document.getElementById("blogBody").innerText;
-        const blob = new Blob([text], { type: "text/plain" });
-        const url = URL.createObjectURL(blob);
-        const link = document.createElement("a");
-        link.href = url;
-        link.download = "<%= blog.title.replace(/[^a-zA-Z0-9]/g, '_') %>.txt";
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
-        URL.revokeObjectURL(url);
-      });
-    </script>
-  </body>
+    playBtn.addEventListener("click", () => {
+      if (speechSynthesis.speaking) speechSynthesis.cancel();
+      speakBlog();
+    });
+    pauseBtn.addEventListener("click", () => {
+      if (speechSynthesis.speaking) speechSynthesis.pause();
+    });
+    resumeBtn.addEventListener("click", () => {
+      if (speechSynthesis.paused) speechSynthesis.resume();
+    });
+    stopBtn.addEventListener("click", () => {
+      speechSynthesis.cancel();
+    });
+    downloadBtn.addEventListener("click", () => {
+      const text = document.getElementById("blogBody").innerText;
+      const blob = new Blob([text], { type: "text/plain" });
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      link.href = url;
+      link.download = "<%= blog.title.replace(/[^a-zA-Z0-9]/g, '_') %>.txt";
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      URL.revokeObjectURL(url);
+    });
+  </script>
+</body>
 </html>

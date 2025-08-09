@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!-- <!DOCTYPE html>
 <html lang="en">
   <head>
     <%- include('./partials/head') %>
@@ -63,4 +63,166 @@
 
     <%- include('./partials/script') %>
   </body>
+</html> -->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <%- include('./partials/head') %>
+  <title>Homepage</title>
+
+  <style>
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(135deg, #ffecd2, #fcb69f, #a1c4fd, #c2e9fb);
+      background-size: 400% 400%;
+      animation: gradientBG 12s ease infinite;
+      color: #222;
+    }
+
+    @keyframes gradientBG {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+
+    h2 {
+      font-weight: bold;
+      color: #fff;
+      text-shadow: 1px 1px 4px rgba(0,0,0,0.4);
+    }
+
+    .card {
+      width: 100%;
+      height: 100%;
+      border: none;
+      border-radius: 14px;
+      overflow: hidden;
+      background: rgba(255, 255, 255, 0.85);
+      backdrop-filter: blur(6px);
+      box-shadow: 0 4px 18px rgba(0, 0, 0, 0.15);
+      transition: transform 0.25s ease, box-shadow 0.25s ease;
+      position: relative;
+    }
+
+    .card:hover {
+      transform: translateY(-8px) scale(1.02);
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.25);
+    }
+
+    .card-img-container {
+      position: relative;
+      width: 100%;
+      height: 220px;
+      overflow: hidden;
+    }
+
+    .card-img-top {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: transform 0.4s ease;
+    }
+
+    .card:hover .card-img-top {
+      transform: scale(1.1);
+    }
+
+    .image-overlay {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(to top, rgba(0, 0, 0, 0.6), transparent);
+      color: white;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+      padding: 1rem;
+      opacity: 0;
+      transition: opacity 0.3s ease;
+    }
+
+    .card:hover .image-overlay {
+      opacity: 1;
+    }
+
+    .overlay-text {
+      font-size: 1rem;
+      font-weight: 500;
+    }
+
+    .overlay-sub {
+      font-size: 0.85rem;
+      opacity: 0.85;
+    }
+
+    .card-body {
+      padding: 1rem;
+      text-align: center;
+    }
+
+    .card-title {
+      font-size: 1.2rem;
+      font-weight: bold;
+      color: #222;
+    }
+
+    .btn-view {
+      background: linear-gradient(135deg, #ff416c, #ff4b2b);
+      border: none;
+      color: white;
+      padding: 0.5rem 1rem;
+      font-weight: 500;
+      border-radius: 6px;
+      text-align: center;
+      transition: all 0.3s ease;
+      box-shadow: 0 3px 8px rgba(255, 65, 108, 0.4);
+    }
+
+    .btn-view:hover {
+      background: linear-gradient(135deg, #ff4b2b, #ff416c);
+      text-decoration: none;
+      box-shadow: 0 5px 14px rgba(255, 65, 108, 0.6);
+    }
+  </style>
+</head>
+<body>
+  <%- include('./partials/nav') %>
+
+  <div class="container mt-4">
+    <h2 class="text-center mb-4">🌈 Latest Blogs</h2>
+    <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-4">
+      <% blogs.forEach(blog => { %>
+        <div class="col">
+          <div class="card h-100">
+            <div class="card-img-container">
+              <img src="<%= blog.coverImageURL || '/images/default-cover.jpg' %>" 
+                   class="card-img-top" 
+                   alt="Blog Image" />
+              <div class="image-overlay">
+                <div class="overlay-text">
+                  <%= blog.content 
+                        ? (blog.content.length > 50 
+                            ? blog.content.substring(0, 50) + "..." 
+                            : blog.content) 
+                        : "Click & enjoy the full blog" 
+                  %>
+                </div>
+                <div class="overlay-sub">Tap to read more</div>
+              </div>
+            </div>
+            <div class="card-body">
+              <h5 class="card-title"><%= blog.title || "Untitled Blog" %></h5>
+              <a href="/blog/<%= blog._id %>" class="btn btn-view">Read More</a>
+            </div>
+          </div>
+        </div>
+      <% }) %>
+    </div>
+  </div>
+
+  <%- include('./partials/script') %>
+</body>
 </html>

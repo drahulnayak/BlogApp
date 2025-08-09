@@ -4,9 +4,8 @@
     <%- include('./partials/head') %>
     <title>Add New Blog</title>
     <style>
-      /* Add custom style to make file input and image preview neat */
       .custom-file-input {
-        width: 300px;
+        width: 100%;
       }
       #imagePreview {
         margin-top: 10px;
@@ -23,7 +22,8 @@
     <%- include('./partials/nav') %>
 
     <div class="container mt-3">
-      <form action="/blog" method="post" enctype="multipart/form-data">
+      <h2>Add a New Blog</h2>
+      <form action="/blog" method="POST" enctype="multipart/form-data">
         <div class="mb-3">
           <label for="coverImage" class="form-label">Cover Image</label>
           <input
@@ -31,7 +31,9 @@
             class="form-control custom-file-input"
             id="coverImage"
             name="coverImage"
+            accept="image/*"
             onchange="previewImage(event)"
+            required
           />
           <img id="imagePreview" alt="Image Preview" />
         </div>
@@ -43,13 +45,19 @@
             class="form-control"
             id="title"
             name="title"
-            aria-describedby="title"
+            required
           />
         </div>
 
         <div class="mb-3">
           <label for="body" class="form-label">Body</label>
-          <textarea name="body" class="form-control" id="body" rows="5"></textarea>
+          <textarea
+            name="body"
+            class="form-control"
+            id="body"
+            rows="5"
+            required
+          ></textarea>
         </div>
 
         <div class="mb-3">
